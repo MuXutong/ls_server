@@ -22,7 +22,7 @@ public class CityDaoImpl extends BaseDao implements CityDao{
 		try {
 			connection=getConn();
 			statement= connection.createStatement();
-			resultSet=statement.executeQuery("select * from city");
+			resultSet=statement.executeQuery("select * from city order by city_sortkey");
 			System.out.println("连接数据库成功");
 			cities = new ArrayList<City>();
 			while (resultSet.next()) {
