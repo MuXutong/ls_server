@@ -6,12 +6,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import com.muxutong.lashou.dao.GoodsDao;
 import com.muxutong.lashou.enity.Goods;
 import com.muxutong.lashou.enity.Shop;
-
+import com.muxutong.lashou.util.UriUtil;
 
 public class GoodsDaoImpl extends BaseDao implements GoodsDao {
 
@@ -60,7 +60,10 @@ public class GoodsDaoImpl extends BaseDao implements GoodsDao {
 				product.setSoldOut(resultSet.getString("prodouct_soldout"));
 				product.setTip(resultSet.getString("prodouct_tip"));
 				product.setEndTime(resultSet.getString("prodouct_end_time"));
-				product.setDetail(resultSet.getString("prodouct_detail"));
+				
+				//String s = StringEscapeUtils.escapeHtml();
+				String str=resultSet.getString("prodouct_detail");		
+				product.setDetail("str");
 				
 				Shop shop = new Shop();
 				shop.setId(resultSet.getString("shop_id"));
@@ -89,7 +92,7 @@ public class GoodsDaoImpl extends BaseDao implements GoodsDao {
 					product.setOverTime(false);
 				}
 				
-				System.out.println(product);
+				//System.out.println(product);
 				
 				goods.add(product);
 			}
@@ -105,6 +108,8 @@ public class GoodsDaoImpl extends BaseDao implements GoodsDao {
 		
 		return goods;
 	}
+	
+	
 
 	@Override
 	public double getcount(String cityId, String catId) {
@@ -135,6 +140,82 @@ public class GoodsDaoImpl extends BaseDao implements GoodsDao {
 		}
 			
 		return 0;
+	}
+
+
+
+	@Override
+	public List<Goods> getGoodByLBS(double minLat, double minLng, double maxLat, double maxLng) {
+		// TODO Auto-generated method stub
+		
+		String sql = "select p.*,s.* from prodouct p,shop s where p.shop_id = s.shop_id "+
+					" and s.shop_lon>"+minLng+
+					" and s.shop_lon<"+maxLng+
+					" and s.shop_lat>"+minLat+
+					" and s.shop_lat<"+maxLat;
+					
+		Connection connection = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+		List<Goods> resultList = new ArrayList<Goods>();
+		try {
+			connection=getConn();
+			statement= connection.createStatement();
+			System.out.println("sql”Ôæ‰£∫"+sql);
+			resultSet=statement.executeQuery(sql);
+			
+			while(resultSet.next()) {
+				
+				Goods product = new Goods();
+				product.setId(resultSet.getString("prodouct_id"));
+				product.setCategoryId(resultSet.getString("category_id"));
+				product.setShopId(resultSet.getString("shop_id"));
+				product.setCityId(resultSet.getString("city_id"));
+				product.setTitle(resultSet.getString("prodouct_title"));
+				product.setSortTitle(resultSet.getString("prodouct_sort_title"));
+				product.setImgUrl(resultSet.getString("prodouct_image"));
+				product.setStartTime(resultSet.getString("prodouct_start_time"));
+				product.setValue(resultSet.getString("prodouct_value"));
+				product.setPrice(resultSet.getString("prodouct_price"));
+				product.setRibat(resultSet.getString("prodouct_ribat"));
+				product.setBought(resultSet.getString("prodouct_bought"));
+				product.setMinquota(resultSet.getString("prodouct_minquota"));
+				product.setMaxQuota(resultSet.getString("prodouct_maxquota"));
+				product.setPost(resultSet.getString("prodouct_post"));
+				product.setSoldOut(resultSet.getString("prodouct_soldout"));
+				product.setTip(resultSet.getString("prodouct_tip"));
+				product.setEndTime(resultSet.getString("prodouct_end_time"));
+				
+				//String s = StringEscapeUtils.escapeHtml();
+				String str=resultSet.getString("prodouct_detail");		
+				product.setDetail("str");
+				
+				Shop shop = new Shop();
+				shop.setId(resultSet.getString("shop_id"));
+				shop.setName(resultSet.getString("shop_name"));
+				shop.setTel(resultSet.getString("shop_tel"));
+				shop.setAddress(resultSet.getString("shop_address"));
+				shop.setArea(resultSet.getString("shop_area"));
+				shop.setOpentime(resultSet.getString("shop_open_time"));
+				shop.setLat(resultSet.getString("shop_lat"));
+				shop.setLon(resultSet.getString("shop_lon"));
+				
+				product.setShop(shop);
+				
+				resultList.add(product);
+				
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return null;
+			
+		}finally {
+			close(resultSet, statement, connection);
+		}
+			
+		
+		return resultList;
 	}
 
 }

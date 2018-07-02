@@ -12,5 +12,6 @@ public interface GoodsDao {
 	
 	public double getcount(String cityId,String catId);
 	
+	public List<Goods> getGoodByLBS(double minLat,double minLng,double maxLat,double maxLng);
 	
 }

@@ -15,18 +15,16 @@ import com.muxutong.lashou.dao.GoodsDao;
 import com.muxutong.lashou.dao.impl.GoodsDaoImpl;
 import com.muxutong.lashou.enity.Goods;
 import com.muxutong.lashou.enity.ResponseObject;
+import com.muxutong.lashou.util.CommonUtil;
 
 /**
- * Servlet implementation class GoodsServlet
+ * Servlet implementation class NearbyServlet
  */
-@WebServlet("/GoodsServlet")
-public class GoodsServlet extends HttpServlet {
+@WebServlet("/NearbyServlet")
+public class NearbyServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-       
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public GoodsServlet() {
+   
+    public NearbyServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -40,31 +38,28 @@ public class GoodsServlet extends HttpServlet {
 		response.setContentType("text/html");
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
-		GoodsDao dao = new GoodsDaoImpl();
-		String cityId = request.getParameter("cityId");
-		String catId = request.getParameter("catId");
-		int page = Integer.parseInt(request.getParameter("page"));
-		int size = Integer.parseInt(request.getParameter("size"));
 		
-		List<Goods> list = dao.getList(cityId, catId, page, size);
-		double count = dao.getcount(cityId, catId);
+		String lat = request.getParameter("lat");
+		String lon = request.getParameter("lon");
+		String raidus = request.getParameter("raidus");
+		
+		double [] around = CommonUtil.getAround(Double.parseDouble(lat), Double.parseDouble(lon), Double.parseDouble(raidus));
+		
+		GoodsDao dao = new GoodsDaoImpl();
+		List<Goods> list = dao.getGoodByLBS(around[0], around[1], around[2], around[3]);
 		
 		ResponseObject result = null;
 
 		if(list != null && list.size()>0) {
 			
 			result = new ResponseObject(1, list);
-			result.setPage(page);
-			result.setCount((int)Math.ceil(count/size));
-			result.setSize(size);
+			
 		}else {
 			
 			result = new ResponseObject(0, "没有商品数据！");
 		}
-		
 		out.println(new GsonBuilder().create().toJson(result));
-		
-		//out.println("</HTML>");
+	
 		out.flush();
 		out.close();
 		
