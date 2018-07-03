@@ -50,11 +50,15 @@ public class UserServlet extends HttpServlet {
 		if("register".equals(flag)){//用户注册
 			System.out.println("name---->>"+name+"password---->>"+password);
 			UserDao userDao=new UserDaoImpl();
-			User user=userDao.register(name, password);
-			if (user!=null) {
-				result=new ResponseObject("注册成功！", 1, user);
-			}else{
-				result=new ResponseObject(0, "用户名已存在！！");
+			if(StringUtils.isNotBlank(name)&&StringUtils.isNotBlank(password)) {
+				User user=userDao.register(name, password);
+				if (user!=null) {
+					result=new ResponseObject("注册成功！", 1, user);
+				}else{
+					result=new ResponseObject(0, "用户名已存在！！");
+				}
+			}else {
+				result = new ResponseObject(0, "用户名和密码不能为空！");
 			}
 		}else if("accout_login".equals(flag)){
 			UserDao userDao=new UserDaoImpl();
