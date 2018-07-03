@@ -37,9 +37,12 @@ public class GoodsServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		response.setContentType("text/html");
-		response.setCharacterEncoding("UTF-8");
+		//…Ë÷√±‡¬Î∏Ò Ω
+		response.setContentType("text/html;charset=utf-8");
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
+		
 		GoodsDao dao = new GoodsDaoImpl();
 		String cityId = request.getParameter("cityId");
 		String catId = request.getParameter("catId");

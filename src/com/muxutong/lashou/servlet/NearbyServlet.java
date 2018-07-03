@@ -35,28 +35,52 @@ public class NearbyServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		
-		response.setContentType("text/html");
-		response.setCharacterEncoding("UTF-8");
+		//设置编码格式
+		response.setContentType("text/html;charset=utf-8");
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
 		PrintWriter out = response.getWriter();
+		
+		int page=0;
+		int size=20;
 		
 		String lat = request.getParameter("lat");
 		String lon = request.getParameter("lon");
-		String raidus = request.getParameter("raidus");
+		String radius = request.getParameter("radius");
 		
-		double [] around = CommonUtil.getAround(Double.parseDouble(lat), Double.parseDouble(lon), Double.parseDouble(raidus));
+		String category=request.getParameter("category");//分类id
+		
+		if(request.getParameter("page")!=null&&!"".equals(request.getParameter("page"))){
+			page=Integer.parseInt(request.getParameter("page"));
+		}
+		if(request.getParameter("size")!=null&&!"".equals(request.getParameter("size"))){
+			size=Integer.parseInt(request.getParameter("size"));
+		}
 		
 		GoodsDao dao = new GoodsDaoImpl();
-		List<Goods> list = dao.getGoodByLBS(around[0], around[1], around[2], around[3]);
+		
+		double [] around = CommonUtil.getAround(Double.parseDouble(lat), Double.parseDouble(lon), Double.parseDouble(radius));
+		
+		
+		List<Goods>list=dao.getGoodByLBS(page,size,category,Double.parseDouble(lat) ,Double.parseDouble(lon) ,around[0], around[1], around[2], around[3]);
+		int count=dao.getCountByLBS(category,Double.parseDouble(lat) ,Double.parseDouble(lon) ,around[0], around[1], around[2], around[3]);
+
 		
 		ResponseObject result = null;
 
 		if(list != null && list.size()>0) {
 			
 			result = new ResponseObject(1, list);
-			
+			result.setPage(page);
+			result.setSize(size);
+			result.setCount((int) Math.ceil(count / size));
+
 		}else {
 			
-			result = new ResponseObject(0, "没有商品数据！");
+			Goods goodsMsg=new Goods();
+			goodsMsg.setDetail("没有获得商品数据");
+			list.add(goodsMsg);
+			result = new ResponseObject(0, list);
 		}
 		out.println(new GsonBuilder().create().toJson(result));
 	
