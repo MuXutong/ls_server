@@ -6,7 +6,7 @@ public class CommonUtil {
 	
 		double degree = (24901*1609)/360.0;
 		double dpmlat = 1/degree;
-		double radiusLat = dpmlat*radius;
+		double radiusLat = dpmlat*radius*10;
 		
 		double minLat = lat- radiusLat;
 		double maxLat = lat+ radiusLat;

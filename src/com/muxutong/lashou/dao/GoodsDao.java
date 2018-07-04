@@ -17,4 +17,8 @@ public interface GoodsDao {
 	//获得附近的商品数据的条数
 	public int getCountByLBS(String category,double lat,double lon,double minLat,double minLon,double maxLat,double maxLon);
 
+	public List<Goods> getGoodByFavo(String user_id);
+	
+	public List<Goods> getGoodByMap(double lat,double lon,double minLat,double minLon,double maxLat,double maxLon);
+
 }
