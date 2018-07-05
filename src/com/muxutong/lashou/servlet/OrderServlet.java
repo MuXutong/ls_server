@@ -60,7 +60,7 @@ public class OrderServlet extends HttpServlet {
 	
 		Order order = ordersDao.addOrders(user_id, prodouct_id, state, allprice, count);
 		if (order != null) {
-			result = new ResponseObject("付款成功！", 1, order);
+			result = new ResponseObject("下单成功！", 1, order);
 		} else {
 			result = new ResponseObject(0, "订单添加失败");
 		}

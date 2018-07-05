@@ -38,12 +38,13 @@ public class OrdersDaoImpl extends BaseDao implements OrdersDao {
 				order=new Order();
 				order.setOrdersAllPrice(resultSet.getString("orders_all_price"));
 				order.setOrdersId(resultSet.getString("orders_id"));
-				order.setOrdersPaystate(Integer.getInteger(resultSet.getString("orders_paystate")));
-				order.setOrdersProdouctCount(Integer.getInteger(resultSet.getString("orders_prodouct_count")));
+				order.setOrdersPaystate(resultSet.getString("orders_paystate"));
+				order.setOrdersProdouctCount(resultSet.getString("orders_prodouct_count"));
 				order.setOrdersProdouctId(resultSet.getString("orders_prodouct_id"));
 				order.setOrdersTime(resultSet.getString("orders_time"));
-				order.setUserId(resultSet.getString("orders_id"));
+				order.setUserId(resultSet.getString("user_id"));
 				
+				System.out.println(order);
 			}
 				
 		} catch (Exception e) {
@@ -62,7 +63,8 @@ public class OrdersDaoImpl extends BaseDao implements OrdersDao {
 		Connection connection = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
-		String sqlForCheck="select * from orders where user_id ='"+user_id+"' and "+"orders_paystate = '"+state+"'";
+		String sqlForCheck="select  prodouct.*,orders.* from prodouct,orders where prodouct.prodouct_id=orders.orders_prodouct_id and "
+				+ "user_id ='"+user_id+"' and "+"orders_paystate = '"+state+"'";
 
 		List<Order> orders = null;
 		try {
@@ -75,12 +77,34 @@ public class OrdersDaoImpl extends BaseDao implements OrdersDao {
 				Order order=new Order();
 				order.setOrdersAllPrice(resultSet.getString("orders_all_price"));
 				order.setOrdersId(resultSet.getString("orders_id"));
-				order.setOrdersPaystate(Integer.getInteger(resultSet.getString("orders_paystate")));
-				order.setOrdersProdouctCount(Integer.getInteger(resultSet.getString("orders_prodouct_count")));
+				order.setOrdersPaystate(resultSet.getString("orders_paystate"));
+				order.setOrdersProdouctCount(resultSet.getString("orders_prodouct_count"));
 				order.setOrdersProdouctId(resultSet.getString("orders_prodouct_id"));
 				order.setOrdersTime(resultSet.getString("orders_time"));
 				order.setUserId(resultSet.getString("user_id"));
 
+				Goods product = new Goods();
+				product.setId(resultSet.getString("prodouct_id"));
+				product.setCategoryId(resultSet.getString("category_id"));
+				product.setShopId(resultSet.getString("shop_id"));
+				product.setCityId(resultSet.getString("city_id"));
+				product.setTitle(resultSet.getString("prodouct_title"));
+				product.setSortTitle(resultSet.getString("prodouct_sort_title"));
+				product.setImgUrl(resultSet.getString("prodouct_image"));
+				product.setStartTime(resultSet.getString("prodouct_start_time"));
+				product.setValue(resultSet.getString("prodouct_value"));
+				product.setPrice(resultSet.getString("prodouct_price"));
+				product.setRibat(resultSet.getString("prodouct_ribat"));
+				product.setBought(resultSet.getString("prodouct_bought"));
+				product.setMinquota(resultSet.getString("prodouct_minquota"));
+				product.setMaxQuota(resultSet.getString("prodouct_maxquota"));
+				product.setPost(resultSet.getString("prodouct_post"));
+				product.setSoldOut(resultSet.getString("prodouct_soldout"));
+				product.setTip(resultSet.getString("prodouct_tip"));
+				product.setEndTime(resultSet.getString("prodouct_end_time"));
+				product.setDetail(resultSet.getString("prodouct_detail"));
+				
+				order.setGoods(product);	
 				orders.add(order);
 			}
 		} catch (Exception e) {
